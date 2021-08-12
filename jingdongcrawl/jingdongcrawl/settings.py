@@ -12,7 +12,7 @@ BOT_NAME = 'jingdongcrawl'
 SPIDER_MODULES = ['jingdongcrawl.spiders']
 NEWSPIDER_MODULE = 'jingdongcrawl.spiders'
 
-KEYWORD = '洗衣机'
+KEYWORD = '冰箱'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'jingdongcrawl (+http://www.yourdomain.com)'

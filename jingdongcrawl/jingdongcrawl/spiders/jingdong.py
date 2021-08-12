@@ -1,5 +1,4 @@
 import scrapy
-from urllib.parse import quote
 from scrapy.http.request import Request
 from jingdongcrawl.items import ProductItem
 from pyquery import PyQuery as pq
@@ -12,32 +11,19 @@ class JingdongSpider(scrapy.Spider):
 
     def start_requests(self):
         for page in range(1, 3):
-            url = self.base_url + quote(self.settings.get('KEYWORD'))
-            yield Request(url=url, callback=self.parse, meta={'page': page}, dont_filter=True)
+            yield Request(url=self.base_url, callback=self.parse, meta={'page': page}, dont_filter=True)
 
     def parse(self, response):
-        result = pq(response)
-        item = ProductItem()
-        item['name'] = result('.p-name em').text().replace('\n', ' '),
-        item['price'] = result('.p-price i').text(),
-        item['shop'] = result('.p-shop a').text(),
-        item['link'] = result('.p-name a').attr('href')
-        yield item
-        # doc = pq(response)
-        # results = doc
-        # for result in results:
-        #     item = ProductItem()
-        #     item['name'] = result('.p-name em').text().replace('\n', ' '),
-        #     item['price'] = result('.p-price i').text(),
-        #     item['shop'] = result('.p-shop a').text(),
-        #     item['link'] = result('.p-name a').attr('href')
-        #     yield item
-        # results = response
-        # for result in results:
-        #     doc = pq(result)
-        #     item = ProductItem()
-        #     item['name'] = doc('.p-name em').text().replace('\n', ' '),
-        #     item['price'] = doc('.p-price i').text(),
-        #     item['shop'] = doc('.p-shop a').text(),
-        #     item['link'] = doc('.p-name a').attr('href')
-        #     yield item
+        print('------------------------------------------------------------------------------------------------')
+        print("正在解析：")
+        html = response.body.decode('utf-8')
+        print("response.body:" + html)
+        doc = pq(html)
+        goods = doc('li').items()
+        for good in goods:
+            item = ProductItem()
+            item['name'] = good('.p-name em').text().replace('\n', ' ')
+            item['price'] = good('.p-price i').text()
+            item['shop'] = good('.p-shop a').text()
+            item['link'] = 'https://' + good('.p-name a').attr('href')
+            yield item

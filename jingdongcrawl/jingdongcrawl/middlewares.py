@@ -27,7 +27,7 @@ class SeleniumMiddleware():
         self.browser.get('https://www.jd.com/')
         self.browser.implicitly_wait(10)
         self.browser.find_element_by_id('key').clear()
-        self.browser.find_element_by_id('key').send_keys('洗衣机')
+        self.browser.find_element_by_id('key').send_keys(self.settings.get('KEYWORD'))
         self.browser.find_element_by_class_name('button').click()
 
     def __del__(self):
@@ -51,7 +51,8 @@ class SeleniumMiddleware():
             # results = []
             # for good in goods:
             #     results.append(good.get_attribute('innerHTML'))
-            results = self.browser.find_element_by_class_name('gl-item').get_attribute('innerHTML')
+            results = self.browser.find_element_by_class_name('gl-warp').get_attribute('innerHTML')
+            print(results)
             print('第', page, '页抓取完成')
             print('------------------------------------------------------------------------------------------------')
             return HtmlResponse(url=request.url, body=results, encoding='utf-8', status=200, request=request)
